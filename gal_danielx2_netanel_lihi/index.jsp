@@ -254,7 +254,7 @@
         <div class="watermark">DEVOPS</div>
 
         <div class="badge">
-            <span class="dot"></span> פתוח להרשמה לסמסטר ב'
+            <span class="dot"></span> גל, דניאל, דניאל, נתנאל וליהי'
         </div>
         
         <h1 class="title-white">הרשמה לקורס דבאופס</h1>
