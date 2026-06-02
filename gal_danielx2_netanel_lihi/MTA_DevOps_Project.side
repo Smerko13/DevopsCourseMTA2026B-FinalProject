@@ -1,0 +1,64 @@
+{
+  "id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+  "version": "2.0",
+  "name": "MeTA DevOps Project",
+  "url": "http://localhost:8082",
+  "tests": [{
+    "id": "b1c2d3e4-f5a6-7890-1234-56789abcdef1",
+    "name": "JSP_5_Validations_Test",
+    "commands": [
+      {
+        "id": "cmd-1",
+        "command": "open",
+        "target": "/FinalProject/gal_danielx2_netanel_lihi/index.jsp",
+        "value": ""
+      },
+      {
+        "id": "cmd-2",
+        "command": "assert title",
+        "target": "הרשמה לקורס דבאופס",
+        "value": ""
+      },
+      {
+        "id": "cmd-3",
+        "command": "verify element present",
+        "target": "id=username",
+        "value": ""
+      },
+      {
+        "id": "cmd-4",
+        "command": "assert text",
+        "target": "css=.btn-primary",
+        "value": "לינק להרשמה ➔"
+      },
+      {
+        "id": "cmd-5",
+        "command": "type",
+        "target": "id=username",
+        "value": "Moshe Mamia"
+      },
+      {
+        "id": "cmd-6",
+        "command": "verify value",
+        "target": "id=username",
+        "value": "Moshe Mamia"
+      },
+      {
+        "id": "cmd-7",
+        "command": "verify element not present",
+        "target": "css=.error-alert",
+        "value": ""
+      }
+    ]
+  }],
+  "suites": [{
+    "id": "s1u2i3t4-e5s6-7890-1234-56789abcdef2",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["b1c2d3e4-f5a6-7890-1234-56789abcdef1"]
+  }],
+  "urls": ["http://localhost:8082/"],
+  "plugins": []
+}
