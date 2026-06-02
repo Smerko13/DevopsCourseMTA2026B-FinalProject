@@ -2,7 +2,7 @@
   "id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
   "version": "2.0",
   "name": "MeTA DevOps Project",
-  "url": "http://http://100.26.63.88:8082",
+  "url": "http://100.26.63.88:8082",
   "tests": [{
     "id": "b1c2d3e4-f5a6-7890-1234-56789abcdef1",
     "name": "JSP_5_Validations_Test",
