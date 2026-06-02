@@ -15,19 +15,19 @@
       },
       {
         "id": "cmd-2",
-        "command": "assert title",
+        "command": "assertTitle",
         "target": "הרשמה לקורס דבאופס",
         "value": ""
       },
       {
         "id": "cmd-3",
-        "command": "verify element present",
+        "command": "verifyElementPresent",
         "target": "id=username",
         "value": ""
       },
       {
         "id": "cmd-4",
-        "command": "assert text",
+        "command": "assertText",
         "target": "css=.btn-primary",
         "value": "לינק להרשמה ➔"
       },
@@ -39,13 +39,13 @@
       },
       {
         "id": "cmd-6",
-        "command": "verify value",
+        "command": "verifyValue",
         "target": "id=username",
         "value": "Moshe Mamia"
       },
       {
         "id": "cmd-7",
-        "command": "verify element not present",
+        "command": "verifyElementNotPresent",
         "target": "css=.error-alert",
         "value": ""
       }
