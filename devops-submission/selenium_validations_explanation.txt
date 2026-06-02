@@ -1,0 +1,48 @@
+Item (g) - Selenium IDE Test Explanation
+========================================
+Test Name: JSP_5_Validations_Test
+Target URL: http://100.26.63.88:8082/FinalProject/a/index.jsp
+Tool: selenium-side-runner (headless Firefox)
+Result: PASSED (15629 ms)
+
+------------------------------------------------------------
+Validation 1 - assertTitle -> "הרשמה לקורס דבאופס"
+Type: Positive test | Command: assert
+Verifies the page loaded correctly and has the right title.
+Uses assert (hard stop) because if the wrong page loaded,
+every other check is meaningless - there is no point continuing.
+------------------------------------------------------------
+Validation 2 - verifyElementPresent -> id=username
+Type: Positive test | Command: verify
+Checks that the input text box exists on the page.
+Uses verify (soft check) so that even if this fails,
+the remaining checks still run to collect all issues in one pass.
+------------------------------------------------------------
+Validation 3 - assertText -> css=.btn-primary = "לינק להרשמה ➔"
+Type: Positive test | Command: assert
+Verifies the button is present and has the correct label.
+Uses assert because a missing or wrong button means the UI is broken -
+the next step (typing into the form) would have no meaning.
+------------------------------------------------------------
+Validation 4 - type + verifyValue -> id=username = "Moshe Mamia"
+Type: Positive test | Command: verify
+Types a name into the input box and verifies the value was accepted.
+Uses verify (not assert) because a failed input field is a bug worth
+reporting but does not block checking the remaining UI state.
+------------------------------------------------------------
+Validation 5 - verifyElementNotPresent -> css=.error-alert
+Type: NEGATIVE test | Command: verify
+Confirms that NO error message appears after filling in the form correctly.
+This is the only negative test - we deliberately check that something
+does NOT exist. Uses verify because it is a secondary quality check,
+not a critical blocker.
+------------------------------------------------------------
+
+Strategy Summary:
+- assert was used for critical prerequisites - if they fail, continuing
+  the test gives no useful information.
+- verify was used for independent observations - failures are reported
+  but the test continues to gather full coverage.
+- 4 out of 5 are positive tests (correct behavior).
+- 1 is a negative test (absence of error message).
+  This combination gives functional coverage AND basic error-state coverage.

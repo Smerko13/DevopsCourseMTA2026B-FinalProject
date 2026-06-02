@@ -1,0 +1,3 @@
+Name of the monitoring tool used: UpTimeRobot
+
+We monitored the liveness of the web application, polling every five minutes to see if it is up and running.
