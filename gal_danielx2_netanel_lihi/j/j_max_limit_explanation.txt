@@ -1,0 +1,87 @@
+Item (j) - Application Max Limit Explanation
+=============================================
+
+CONCLUSION: The application's max limit is approximately 59 requests/sec (successful).
+
+=============================================
+HOW WE FOUND IT - Test Methodology
+=============================================
+
+We ran the "Gatling Max Limit Test" which was built from a HAR file (scenario.har)
+recorded in Chrome DevTools while performing the real user scenario on the application.
+The HAR recorded a GET request to the registration page (200 OK, ~396ms real response).
+
+The injection profile aggressively ramped up virtual users:
+  - 5 sec pause (server warm-up)
+  - 1 to 50 users/sec over 1 minute   (gentle warm-up)
+  - 50 to 150 users/sec over 1 minute (approaching limit)
+  - 150 to 300 users/sec over 1 minute (past expected limit)
+  - Hold at 300 users/sec for 1 minute (confirm break)
+  - Cool down to 1 user/sec over 30 seconds
+
+Target URL: http://100.26.63.88:8082/FinalProject/a/index.jsp
+Test date: June 2, 2026
+Source: scenario.har -> RecordedSimulation.scala -> MaxLimitSimulation.scala
+
+=============================================
+ACTUAL RESULTS (from global_stats.json)
+=============================================
+
+Total requests sent:          43,545
+Successful (OK):              16,322  (37%)
+Failed (KO / timed out):      27,223  (63%)
+
+Response times (successful requests only):
+  Min:                        326 ms
+  Mean:                     1,164 ms
+  50th percentile (p50):      478 ms
+  75th percentile (p75):    1,394 ms
+  95th percentile (p95):    3,427 ms
+  99th percentile (p99):    7,462 ms
+  Max:                      8,049 ms
+
+Response times (failed requests):
+  All failed requests timed out at exactly 10,000 ms (10 sec Gatling timeout)
+  Mean of failed requests:   10,012 ms
+
+Throughput:
+  Total injection rate:       157.77 req/sec (attempted by Gatling)
+  Successful requests/sec:     59.14 req/sec (actual max sustainable)
+  Failed requests/sec:         98.63 req/sec (overload portion)
+
+=============================================
+WHY THIS IS THE LIMIT
+=============================================
+
+The results show a clear breaking point. When the injection rate exceeded
+approximately 50-60 requests/sec, the server could no longer keep up:
+
+1. CONNECTION POOL EXHAUSTION: Tomcat has a default maximum of 200 threads.
+   Once all threads were occupied handling slow or queued requests, new
+   incoming requests had to wait. When the wait exceeded 10 seconds, Gatling
+   marked them as KO (failed). This is why 63% of all requests failed with
+   exactly a 10-second timeout - they were not rejected immediately, but
+   queued until the timeout expired.
+
+2. THE KNEE OF THE CURVE: Up to ~59 req/sec the server responded acceptably
+   (mean 1,164ms for successful requests, min 326ms). Beyond that, response
+   times exploded to 7-10 seconds - the classic "knee" pattern that defines
+   the breaking point / max limit.
+
+3. AWS EC2 FREE TIER CONSTRAINTS: The application runs on an AWS EC2 t2.micro
+   instance (1 vCPU, 1GB RAM). This severely limits throughput compared to
+   a production server. The CPU becomes the bottleneck when handling many
+   concurrent JSP render + TCP connections simultaneously.
+
+4. NETWORK LATENCY: Each real request travels over the internet to AWS
+   (recorded at 396ms in the HAR: 200ms TCP connect + 179ms server wait).
+   Under high load, queuing adds to this, pushing response times to 8+ seconds.
+
+5. STATIC JSP WITH NO CACHING: The page is served fresh each time (Tomcat
+   renders the JSP per request), adding CPU overhead per request.
+
+SUMMARY:
+  Max stable limit  = ~59 successful requests/sec
+  At 157 req/sec injection rate = 63% failure rate
+  The server breaks under sustained load above ~60 requests/sec
+  All failures are timeouts (10s) - server queues then drops, not crashes
