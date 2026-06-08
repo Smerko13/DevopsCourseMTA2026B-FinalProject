@@ -1,0 +1,38 @@
+Item (j) - Application Max Limit Explanation
+=============================================
+
+Max Limit: ~99 successful requests/second
+
+How we found it:
+----------------
+We ran MaxLimitSimulation.scala using Gatling, which aggressively ramped up
+from 1 to 300 users/second over ~4.5 minutes, then held at 300 for 1 minute.
+
+Results summary:
+- Total requests:     43,545
+- Successful (OK):    26,743 (61%) at ~99 req/sec
+- Failed (KO):        16,802 (39%)
+- Error:              j.n.BindException: Address already in use
+
+Why this is the limit:
+----------------------
+The failures were NOT caused by the server going down. They were caused by
+local TCP port exhaustion on the test machine. Windows has a limited pool of
+~16,000 ephemeral ports for outgoing connections. When Gatling pushed beyond
+~150 users/second, the test machine ran out of available ports to open new
+connections, causing BindException errors.
+
+The server (Tomcat on EC2) was responding successfully at ~99 req/sec with
+response times between 285-500ms. This is the practical max limit from our
+test environment.
+
+The server-side limit is determined by:
+- Tomcat thread pool size (default ~200 threads)
+- EC2 instance type CPU and memory (t2/t3 micro/small)
+- Network bandwidth of the EC2 instance
+
+Conclusion:
+-----------
+The application's practical max limit is ~99 requests/second.
+Beyond this rate (from a single test client), the test machine's TCP stack
+becomes the bottleneck, not the server itself.
