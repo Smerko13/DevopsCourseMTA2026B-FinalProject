@@ -1,0 +1,23 @@
+HAR Scenario Description
+=====================================
+
+The HAR file (scenario.har) was recorded using Firefox DevTools (F12 -> Network tab)
+while performing the following user scenario on the application:
+
+Step 1: Navigate to http://100.26.63.88:8082/gal_danielx2_netanel_lihi/a/
+        -> Browser sends GET request to the Tomcat server
+        -> Server responds with HTTP 200 OK
+        -> The course registration page loads
+        -> Page is rendered
+
+Step 2: User types their name into the registration input field
+        -> Type "Daniel" into the input box (id=username)
+        -> No HTTP request is made (client-side only)
+
+Step 3: User clicks the registration button ("לינק להרשמה ➔")
+        -> JavaScript alert fires: "הבקשה נשלחה לשרת בהצלחה!"
+        -> No HTTP request is made (client-side JavaScript alert only)
+
+Step 4: User clicks OK on the alert
+        -> Page returns to normal state
+        -> No HTTP request is made

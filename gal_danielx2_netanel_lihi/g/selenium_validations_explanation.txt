@@ -1,0 +1,64 @@
+Item (g) - Selenium Validations Explanation
+============================================
+
+We created 5 validations for the DevOps course registration page
+(http://100.26.63.88:8082/gal_danielx2_netanel_lihi/a/).
+
+Validation 1 - Assert Title (Positive Test)
+--------------------------------------------
+Command: assertTitle
+Value: הרשמה לקורס דבאופס
+
+We used ASSERT because the page title is critical - if the wrong page loaded
+(e.g. a 404 or Tomcat error page), the entire test must stop immediately.
+This is a positive test: we verify the correct page is loaded before doing
+anything else.
+
+Validation 2 - Assert Element Present (Positive Test)
+------------------------------------------------------
+Command: assertElementPresent
+Target: id=username
+
+We used ASSERT because the input box is a core element of the application.
+If it is missing, the app is broken and there is no point continuing the test.
+This is a positive test: we confirm that the main interactive element exists
+and is accessible.
+
+Validation 3 - Verify Text (Positive Test)
+-------------------------------------------
+Command: verifyText
+Target: css=.logo
+Value: MeTA.
+
+We used VERIFY (not assert) because the logo text is a non-critical UI element.
+If it is slightly wrong it is worth noting but should not stop the test.
+This is a positive test: we confirm the brand name appears correctly on the page.
+
+Validation 4 - Assert Alert (Positive Test)
+--------------------------------------------
+Commands: click css=.btn-primary -> assertAlert
+Value: הבקשה נשלחה לשרת בהצלחה!
+
+We used ASSERT because the button click and alert response is the main
+functionality of the application. We first click the registration button,
+then assert the exact alert message appears. If the alert text is wrong
+or missing, the core feature is broken and the test must fail hard.
+This is a positive test: we verify the happy path of the main user action.
+
+Validation 5 - Verify Element Not Present (Negative Test)
+----------------------------------------------------------
+Command: verifyElementNotPresent
+Target: id=error-message
+
+We used VERIFY because this is a soft negative check - we want to confirm
+no error message appears on a clean page load, but if it does appear it is
+worth logging without stopping the test suite.
+This is a NEGATIVE test: we verify the absence of something that should NOT
+be there, confirming the page loads cleanly without any error state.
+
+Summary
+-------
+- 3 x ASSERT: for critical functionality (title, input box, alert text)
+- 2 x VERIFY: for non-critical checks (logo text, no error message)
+- 4 x Positive tests: verify things that SHOULD be present/true
+- 1 x Negative test: verify something that should NOT be present

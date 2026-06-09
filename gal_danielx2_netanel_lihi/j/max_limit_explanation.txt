@@ -28,7 +28,7 @@ test environment.
 
 The server-side limit is determined by:
 - Tomcat thread pool size (default ~200 threads)
-- EC2 instance type CPU and memory (t2/t3 micro/small)
+- EC2 instance type CPU and memory 
 - Network bandwidth of the EC2 instance
 
 Conclusion:
