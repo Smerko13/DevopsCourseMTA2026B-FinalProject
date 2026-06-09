@@ -1,0 +1,41 @@
+Item (l) - Gatling Results Explanation
+=======================================
+
+--- MAX LIMIT TEST ---
+Results: 43,545 requests | 61% OK (~99 req/sec) | 39% failed
+Error: j.n.BindException: Address already in use
+
+Explanation:
+The failures were caused by local TCP port exhaustion on the test machine,
+not by the server going down. Windows has ~16,000 ephemeral ports for outgoing
+connections. When Gatling pushed beyond ~150 users/sec, the machine ran out
+of ports, causing BindException errors. The server itself was stable at ~99
+successful req/sec with response times of 285-500ms throughout the test.
+
+--- LOAD TEST ---
+Results: 12,060 requests | 100% OK | 0 failed
+Mean response time: 309ms | Max: 972ms
+
+Explanation:
+The load test ran at 50 req/sec (well below the ~99 req/sec limit) for 5
+minutes. The server handled all requests successfully with consistent response
+times. The low standard deviation (35ms) shows the server was stable with no
+queuing or degradation. This is expected behavior under normal load conditions.
+
+--- STRESS TEST ---
+Results: 30,480 requests | 80% OK (~80 req/sec) | 20% failed
+Mean response time (OK): 318ms | Max: 2678ms
+
+Explanation:
+The stress test ramped up to 200 req/sec, well past the practical limit of
+~99 req/sec. Failures began appearing when pushing past ~100 req/sec due to
+local TCP port exhaustion (same BindException as the max limit test). The
+server continued to serve ~80 req/sec successfully even under heavy stress,
+demonstrating graceful degradation rather than a complete crash. The spike in
+max response time (2678ms vs 972ms in load test) shows the server was under
+pressure but still responding within acceptable limits for successful requests.
+
+The system behavior under stress was as expected: the bottleneck was the
+test client's TCP stack, not the Tomcat server. In a real production scenario
+with multiple distributed load generators, the server would likely fail at a
+higher threshold determined by Tomcat thread pool and EC2 instance resources.
